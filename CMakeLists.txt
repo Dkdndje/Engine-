@@ -4,35 +4,29 @@ project(Torque2DApp C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# 1. Projedeki C/C++ dosyalarını tara
+# 1. Torque2D'nin Ana Kaynak Kodlarını Tara
 file(GLOB_RECURSE ENGINE_SOURCES 
     "engine/src/*.cpp"
     "engine/src/*.c"
-    "engine/lib/freetype/src/*.c"
-    "engine/lib/tamxml/*.cpp"
-    "engine/lib/tinyxml/*.cpp"
-    "engine/lib/zlib/*.c"
-    "engine/lib/png/*.c"
+    "engine/lib/*.cpp"
+    "engine/lib/*.c"
 )
 
-# 2. Amiga, Mac, Symbian, Win32 gibi gereksiz/hatalı dosyaları listeden çıkar
+# 2. Hata Veren / Platforma Özel Üçüncü Parti Derleme Klasörlerini Hariç Tut
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*builds/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*amiga.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*mac.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*win32.*")
 
-# Android için özel FreeType sistem dosyasını ekle
-list(APPEND ENGINE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/src/base/ftsystem.c")
-list(APPEND ENGINE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/src/base/ftdebug.c")
-
-# 3. Android için paylaşımlı kütüphane oluştur
+# 3. Android İçin Paylaşımlı Kütüphane Oluştur
 add_library(Torque2D SHARED ${ENGINE_SOURCES})
 
-# 4. Include Dizinleri (ft2build.h için gerekli tüm yollar)
+# 4. Gerekli Include Dizinlerini Ekle
 target_include_directories(Torque2D PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/src
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/include/freetype
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/zlib
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/png
 )
