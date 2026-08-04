@@ -4,38 +4,43 @@ project(Torque2DApp C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Projedeki tüm C/C++ kaynak dosyalarını otomatik tara
+# 1. Projedeki C/C++ dosyalarını tara
 file(GLOB_RECURSE ENGINE_SOURCES 
-    "*.cpp"
-    "*.c"
-    "*.cc"
-    "engine/*.cpp"
-    "engine/*.c"
-    "source/*.cpp"
-    "source/*.c"
+    "engine/src/*.cpp"
+    "engine/src/*.c"
+    "engine/lib/freetype/src/*.c"
+    "engine/lib/tamxml/*.cpp"
+    "engine/lib/tinyxml/*.cpp"
+    "engine/lib/zlib/*.c"
+    "engine/lib/png/*.c"
 )
 
-# Dosya bulunamazsa açık hata mesajı ver
-list(LENGTH ENGINE_SOURCES SOURCE_COUNT)
-if(SOURCE_COUNT EQUAL 0)
-    message(FATAL_ERROR "Derlenecek C/C++ dosyasi bulunamadi! Lutfen klasor yapisini kontrol edin.")
-endif()
+# 2. Amiga, Mac, Symbian, Win32 gibi gereksiz/hatalı dosyaları listeden çıkar
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*builds/.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*amiga.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*mac.*")
 
-# Android için paylaşımlı kütüphane oluştur
+# Android için özel FreeType sistem dosyasını ekle
+list(APPEND ENGINE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/src/base/ftsystem.c")
+list(APPEND ENGINE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/src/base/ftdebug.c")
+
+# 3. Android için paylaşımlı kütüphane oluştur
 add_library(Torque2D SHARED ${ENGINE_SOURCES})
 
-# Android sistem kütüphanelerini bağla
+# 4. Include Dizinleri (ft2build.h için gerekli tüm yollar)
+target_include_directories(Torque2D PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/include/freetype
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/zlib
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/png
+)
+
+# 5. Android Sistem Kütüphanelerini Bağla
 target_link_libraries(Torque2D
     android
     log
     GLESv2
     EGL
-)
-
-# Include dizinlerini ekle
-target_include_directories(Torque2D PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    "engine"
-    "source"
-    "include"
 )
