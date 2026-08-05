@@ -58,7 +58,7 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/inftrees\\
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/infutil\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/zutil\\.c$")
 
-# FreeType çakışmaya yol açan birleştirilmiş (wrapper / amalgamation) ve iç içe dahil edilen dosyaları süz
+# FreeType çakışmaya yol açan birleştirilmiş ve iç içe dahil edilen dosyaları süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/cff/cff\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/cid/type1cid\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/cache/ftcache\\.c$")
@@ -78,12 +78,19 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/lzw/ftzopen\\.c
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/psnames/psnames\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/sfnt/ttsbit0\\.c$")
 
-# libvorbis içindeki standalone test programlarını süz (kendi main() fonksiyonları var)
+# *** EKSİK SEMBOL ÇÖZÜMÜ ***
+# autofit_module_class sembolünü sağlayan ana autofit.c dosyasını geri ekliyoruz
+file(GLOB AUTOFIT_MAIN "engine/lib/freetype/android/freetype-2.4.12/src/autofit/autofit.c")
+if(AUTOFIT_MAIN)
+    list(APPEND ENGINE_SOURCES ${AUTOFIT_MAIN})
+endif()
+
+# libvorbis içindeki standalone test programlarını süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/libvorbis/barkmel\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/libvorbis/tone\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/libvorbis/psytune\\.c$")
 
-# ljpeg (JPEG) kütüphanesinin ek/araç programlarını ve çakışan bellek yöneticilerini süz
+# ljpeg (JPEG) kütüphanesinin araç programlarını süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/extras/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/ansi2knr\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/cjpeg\\.c$")
@@ -100,7 +107,7 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/jmemansi\\.c$")
 # libpng test dosyasını süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/lpng/pngtest\\.c$")
 
-# OpenAL masaüstü ve diğer platform sürücülerini süz (Android'de çalışmazlar)
+# OpenAL masaüstü ve diğer platform sürücülerini süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/win32/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/mac/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/iOS/.*")
@@ -112,12 +119,6 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/oss\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/dsound\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/winmm\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/pulseaudio\\.c$")
-list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/portaudio\\.c$")
-list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/coreaudio\\.c$")
-list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/solaris\\.c$")
-list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/sndio\\.c$")
-list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/qsa\\.c$")
-list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/jack\\.c$")
 
 # 4. Android İçin Paylaşımlı Kütüphane Oluştur
 add_library(Torque2D SHARED ${ENGINE_SOURCES})
@@ -131,22 +132,13 @@ target_include_directories(Torque2D PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/android/freetype-2.4.12/include
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/android/freetype-2.4.12/include/freetype
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/android/freetype-2.4.12/include/freetype/config
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/android/freetype-2.4.12/include/freetype/internal
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/zlib
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/png
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/ljpeg
-    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libogg
-    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libogg/include
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libvorbis
-    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libvorbis/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libvorbis/lib
-    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal
-    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/include/AL
-    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/Android/openal-soft-master/jni/OpenAL
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libogg/include
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/Android/openal-soft-master/jni/OpenAL/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/Android/openal-soft-master/jni/OpenAL/include/AL
-    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/Android/openal-soft-master/jni/OpenAL/Alc
-    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/Android/openal-soft-master/jni/OpenAL/OpenAL32/Include
 )
 
 # 6. Android Sistem Kütüphanelerini Bağla
@@ -156,4 +148,6 @@ target_link_libraries(Torque2D
     GLESv2
     EGL
     OpenSLES
+    atomic
+    m
 )
