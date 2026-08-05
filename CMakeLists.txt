@@ -4,12 +4,13 @@ project(Torque2DApp C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Eski C kütüphanelerinin (OpenAL, ljpeg, freetype) Clang 18 ile derlenebilmesi için uyumluluk bayrakları
+# Eski C kütüphanelerinin (OpenAL, ljpeg, freetype, zlib) Clang 18 ile derlenebilmesi için uyumluluk bayrakları
 add_compile_options(
     -Wno-implicit-function-declaration
     -Wno-error=implicit-function-declaration
     -Wno-int-conversion
     -Wno-error=int-conversion
+    -fcommon
 )
 
 # FreeType, Torque2D ve OpenAL için gerekli makrolar
@@ -57,7 +58,7 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/inftrees\\
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/infutil\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/zutil\\.c$")
 
-# FreeType çakışmaya yol açan birleştirilmiş (wrapper / amalgamation) kapsayıcı dosyaları süz
+# FreeType çakışmaya yol açan birleştirilmiş (wrapper / amalgamation) ve iç içe dahil edilen dosyaları süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/cff/cff\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/cid/type1cid\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/cache/ftcache\\.c$")
@@ -72,6 +73,15 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/psaux/psaux\\.c
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/pshinter/pshinter\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/sfnt/sfnt\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/base/ftbase\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/bdf/bdf\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/lzw/ftzopen\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/psnames/psnames\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/sfnt/ttsbit0\\.c$")
+
+# libvorbis içindeki standalone test programlarını süz (kendi main() fonksiyonları var)
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/libvorbis/barkmel\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/libvorbis/tone\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/libvorbis/psytune\\.c$")
 
 # ljpeg (JPEG) kütüphanesinin ek/araç programlarını ve çakışan bellek yöneticilerini süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/extras/.*")
