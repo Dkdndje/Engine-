@@ -57,6 +57,22 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/inftrees\\
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/infutil\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/zutil\\.c$")
 
+# FreeType çakışmaya yol açan birleştirilmiş (wrapper / amalgamation) kapsayıcı dosyaları süz
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/cff/cff\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/cid/type1cid\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/cache/ftcache\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/raster/raster\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/smooth/smooth\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/pfr/pfr\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/pcf/pcf\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/truetype/truetype\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/type1/type1\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/type42/type42\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/psaux/psaux\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/pshinter/pshinter\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/sfnt/sfnt\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/base/ftbase\\.c$")
+
 # ljpeg (JPEG) kütüphanesinin ek/araç programlarını ve çakışan bellek yöneticilerini süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/extras/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/ansi2knr\\.c$")
@@ -92,11 +108,6 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/solaris\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/sndio\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/qsa\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/jack\\.c$")
-
-# FreeType ana kaynak dosyasını ekle
-file(GLOB FREETYPE_BASE_SOURCES "engine/lib/freetype/android/freetype-2.4.12/src/base/*.c")
-list(FILTER FREETYPE_BASE_SOURCES EXCLUDE REGEX ".*/ftmac\\.c$")
-list(APPEND ENGINE_SOURCES ${FREETYPE_BASE_SOURCES})
 
 # 4. Android İçin Paylaşımlı Kütüphane Oluştur
 add_library(Torque2D SHARED ${ENGINE_SOURCES})
