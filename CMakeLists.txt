@@ -15,24 +15,26 @@ file(GLOB_RECURSE ENGINE_SOURCES
     "engine/lib/*.c"
 )
 
-# 2. FreeType'ın sorun çıkaran alt modül dosyalarını (autofit alt parçaları vb.) süz
+# 2. Android Dışı Platform Kodlarını Süz
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/src/platformWin32/.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/src/platformOSX/.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/src/platformMac/.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/src/platformX86UNIX/.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/src/platformiOS/.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/src/platformEmscripten/.*")
+
+# 3. FreeType ve Diğer Kütüphanelerin Sorunlu Araç/Gereçlerini Süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/autofit/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/builds/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/amiga.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/mac.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/win32.*")
-
-# ftmac.c dosyasını özellikle de hariç tut (macOS-only, CoreServices gerektirir)
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX ".*/ftmac\\.c$")
-
-# gxvalid ve otvalid modüllerini tamamen hariç tut
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gxvalid/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/otvalid/.*")
-
-# src/tools klasörü: FreeType geliştirici araçları
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/src/tools/.*")
 
-# gzip modülü: sadece ftgzip.c derlenmeli
+# FreeType Gzip içindeki tekil derlenmeyen dosyaları süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/adler32\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/infblock\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/infcodes\\.c$")
@@ -41,18 +43,25 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/inftrees\\
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/infutil\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/zutil\\.c$")
 
+# ljpeg (JPEG) kütüphanesinin ek/araç programlarını süz
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/extras/.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/ansi2knr\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/cjpeg\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/djpeg\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/jpegtran\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/rdjpgcom\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/wrjpgcom\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/example\\.c$")
+
 # FreeType ana kaynak dosyasını ekle
 file(GLOB FREETYPE_BASE_SOURCES "engine/lib/freetype/android/freetype-2.4.12/src/base/*.c")
-
-# base dosyaları eklemeden önce ftmac.c'yi bu listeden de çıkar
 list(FILTER FREETYPE_BASE_SOURCES EXCLUDE REGEX ".*/ftmac\\.c$")
-
 list(APPEND ENGINE_SOURCES ${FREETYPE_BASE_SOURCES})
 
-# 3. Android İçin Paylaşımlı Kütüphane Oluştur
+# 4. Android İçin Paylaşımlı Kütüphane Oluştur
 add_library(Torque2D SHARED ${ENGINE_SOURCES})
 
-# 4. Include Dizinleri
+# 5. Include Dizinleri
 target_include_directories(Torque2D PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/src
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib
@@ -63,11 +72,15 @@ target_include_directories(Torque2D PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/android/freetype-2.4.12/include/freetype/config
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/zlib
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/png
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/ljpeg
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libogg
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libogg/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libvorbis
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libvorbis/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libvorbis/lib
 )
 
-# 5. Android Sistem Kütüphanelerini Bağla
+# 6. Android Sistem Kütüphanelerini Bağla
 target_link_libraries(Torque2D
     android
     log
