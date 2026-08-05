@@ -4,8 +4,14 @@ project(Torque2DApp C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# FreeType ve Torque2D için gerekli makrolar
-add_definitions(-DFT2_BUILD_LIBRARY -DFT_CONFIG_CONFIG_H=<ftconfig.h> -DFT_CONFIG_MODULES_H=<ftmodule.h>)
+# FreeType, Torque2D ve OpenAL için gerekli makrolar
+add_definitions(
+    -DFT2_BUILD_LIBRARY 
+    -DFT_CONFIG_CONFIG_H=<ftconfig.h> 
+    -DFT_CONFIG_MODULES_H=<ftmodule.h>
+    -DAL_ALEXT_PROTOTYPES
+    -DAL_BUILD_LIBRARY
+)
 
 # 1. Torque2D C/C++ Kaynak Kodlarını Tara
 file(GLOB_RECURSE ENGINE_SOURCES 
@@ -60,12 +66,21 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/jmemansi\\.c$")
 # libpng test dosyasını süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/lpng/pngtest\\.c$")
 
-# OpenAL platform-spesifik dışı klasörleri ve test araçlarını süz
+# OpenAL platform-spesifik dışı klasörleri, test araçlarını ve Android dışı backend sürücülerini süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/win32/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/mac/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/iOS/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/examples/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/tests/.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/Alc/backends/.*")
+
+# Android OpenAL backend sürücülerini manuel ekle (opensles, null, wave)
+file(GLOB OPENAL_ANDROID_BACKENDS
+    "engine/lib/openal/Android/openal-soft-master/jni/OpenAL/Alc/backends/opensles.c"
+    "engine/lib/openal/Android/openal-soft-master/jni/OpenAL/Alc/backends/null.c"
+    "engine/lib/openal/Android/openal-soft-master/jni/OpenAL/Alc/backends/wave.c"
+)
+list(APPEND ENGINE_SOURCES ${OPENAL_ANDROID_BACKENDS})
 
 # FreeType ana kaynak dosyasını ekle
 file(GLOB FREETYPE_BASE_SOURCES "engine/lib/freetype/android/freetype-2.4.12/src/base/*.c")
@@ -94,8 +109,10 @@ target_include_directories(Torque2D PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libvorbis/lib
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/include/AL
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/Android/openal-soft-master/jni/OpenAL
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/Android/openal-soft-master/jni/OpenAL/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/Android/openal-soft-master/jni/OpenAL/include/AL
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/Android/openal-soft-master/jni/OpenAL/Alc
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/Android/openal-soft-master/jni/OpenAL/OpenAL32/Include
 )
