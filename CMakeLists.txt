@@ -52,12 +52,20 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/jpegtran\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/rdjpgcom\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/wrjpgcom\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/example\\.c$")
-
-# ljpeg çakışan bellek yöneticileri (Android için sadece jmemnobs.c kalmalı)
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/jmemdos\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/jmemmac\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/jmemname\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/jmemansi\\.c$")
+
+# libpng test dosyasını süz
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/lpng/pngtest\\.c$")
+
+# OpenAL platform-spesifik dışı klasörleri ve test araçlarını süz
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/win32/.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/mac/.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/iOS/.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/examples/.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/tests/.*")
 
 # FreeType ana kaynak dosyasını ekle
 file(GLOB FREETYPE_BASE_SOURCES "engine/lib/freetype/android/freetype-2.4.12/src/base/*.c")
@@ -84,6 +92,12 @@ target_include_directories(Torque2D PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libvorbis
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libvorbis/include
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libvorbis/lib
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/Android/openal-soft-master/jni/OpenAL
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/Android/openal-soft-master/jni/OpenAL/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/Android/openal-soft-master/jni/OpenAL/Alc
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/openal/Android/openal-soft-master/jni/OpenAL/OpenAL32/Include
 )
 
 # 6. Android Sistem Kütüphanelerini Bağla
@@ -92,4 +106,5 @@ target_link_libraries(Torque2D
     log
     GLESv2
     EGL
+    OpenSLES
 )
