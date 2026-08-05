@@ -30,6 +30,10 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX ".*/ftmac\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gxvalid/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/otvalid/.*")
 
+# src/tools klasörü: FreeType geliştirici araçları (test programları, kendi main()
+# fonksiyonları var) - kütüphanenin parçası değil, tamamen hariç tutulmalı
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/src/tools/.*")
+
 # gzip modülü: sadece ftgzip.c derlenmeli, diğer .c dosyaları ftgzip.c
 # içine #include edilir (bağımsız derlenirse "undeclared function" hatası verir)
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/adler32\\.c$")
