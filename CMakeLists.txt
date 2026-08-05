@@ -74,21 +74,24 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/jmemansi\\.c$")
 # libpng test dosyasını süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/lpng/pngtest\\.c$")
 
-# OpenAL platform-spesifik dışı klasörleri, test araçlarını ve Android dışı backend sürücülerini süz
+# OpenAL masaüstü ve diğer platform sürücülerini süz (Android'de çalışmazlar)
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/win32/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/mac/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/iOS/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/examples/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/tests/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/Alc/backends/.*")
-
-# Android OpenAL backend sürücülerini manuel ekle (opensles, null, wave)
-file(GLOB OPENAL_ANDROID_BACKENDS
-    "engine/lib/openal/Android/openal-soft-master/jni/OpenAL/Alc/backends/opensles.c"
-    "engine/lib/openal/Android/openal-soft-master/jni/OpenAL/Alc/backends/null.c"
-    "engine/lib/openal/Android/openal-soft-master/jni/OpenAL/Alc/backends/wave.c"
-)
-list(APPEND ENGINE_SOURCES ${OPENAL_ANDROID_BACKENDS})
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/alsa\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/oss\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/dsound\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/winmm\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/pulseaudio\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/portaudio\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/coreaudio\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/solaris\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/sndio\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/qsa\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/openal/.*/jack\\.c$")
 
 # FreeType ana kaynak dosyasını ekle
 file(GLOB FREETYPE_BASE_SOURCES "engine/lib/freetype/android/freetype-2.4.12/src/base/*.c")
