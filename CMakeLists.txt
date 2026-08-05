@@ -78,7 +78,14 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/lzw/ftzopen\\.c
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/psnames/psnames\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/sfnt/ttsbit0\\.c$")
 
-# libvorbis içindeki standalone test programlarını süz (kendi main() fonksiyonları var)
+# --- AUTOFIT MODÜLÜ BİRLEŞTİRİCİSİ (autofit_module_class ÇÖZÜMÜ) ---
+# autofit altındaki tekil dosyaları filtrelemiştik; ana birleştirici dosyayı açıkça ekliyoruz:
+file(GLOB AUTOFIT_MAIN "engine/lib/freetype/android/freetype-2.4.12/src/autofit/autofit.c")
+if(AUTOFIT_MAIN)
+    list(APPEND ENGINE_SOURCES ${AUTOFIT_MAIN})
+endif()
+
+# libvorbis içindeki standalone test programlarını süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/libvorbis/barkmel\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/libvorbis/tone\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/libvorbis/psytune\\.c$")
@@ -131,6 +138,8 @@ target_include_directories(Torque2D PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/android/freetype-2.4.12/include
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/android/freetype-2.4.12/include/freetype
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/android/freetype-2.4.12/include/freetype/config
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/android/freetype-2.4.12/include/freetype/internal
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/android/freetype-2.4.12/src/autofit
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/zlib
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/png
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/ljpeg
@@ -156,4 +165,6 @@ target_link_libraries(Torque2D
     GLESv2
     EGL
     OpenSLES
+    atomic
+    m
 )
