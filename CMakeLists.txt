@@ -4,13 +4,21 @@ project(Torque2DApp C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Eski C kütüphanelerinin (OpenAL, ljpeg, freetype) Clang 18 ile derlenebilmesi için uyumluluk bayrakları
+add_compile_options(
+    -Wno-implicit-function-declaration
+    -Wno-error=implicit-function-declaration
+    -Wno-int-conversion
+    -Wno-error=int-conversion
+)
+
 # FreeType, Torque2D ve OpenAL için gerekli makrolar
 add_definitions(
     -DFT2_BUILD_LIBRARY 
     -DFT_CONFIG_CONFIG_H=<ftconfig.h> 
     -DFT_CONFIG_MODULES_H=<ftmodule.h>
     -DAL_ALEXT_PROTOTYPES
-    -DAL_BUILD_LIBRARY
+    -D_GNU_SOURCE
 )
 
 # 1. Torque2D C/C++ Kaynak Kodlarını Tara
