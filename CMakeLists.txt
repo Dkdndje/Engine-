@@ -25,17 +25,14 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/win32.*")
 # ftmac.c dosyasını özellikle de hariç tut (macOS-only, CoreServices gerektirir)
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX ".*/ftmac\\.c$")
 
-# gxvalid ve otvalid modüllerini tamamen hariç tut (opsiyonel font validasyon,
-# gxvfgen.c gibi standalone tool dosyaları içerdikleri için build'i bozuyorlar)
+# gxvalid ve otvalid modüllerini tamamen hariç tut
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gxvalid/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/otvalid/.*")
 
-# src/tools klasörü: FreeType geliştirici araçları (test programları, kendi main()
-# fonksiyonları var) - kütüphanenin parçası değil, tamamen hariç tutulmalı
+# src/tools klasörü: FreeType geliştirici araçları
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/src/tools/.*")
 
-# gzip modülü: sadece ftgzip.c derlenmeli, diğer .c dosyaları ftgzip.c
-# içine #include edilir (bağımsız derlenirse "undeclared function" hatası verir)
+# gzip modülü: sadece ftgzip.c derlenmeli
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/adler32\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/infblock\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/infcodes\\.c$")
@@ -66,6 +63,8 @@ target_include_directories(Torque2D PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/freetype/android/freetype-2.4.12/include/freetype/config
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/zlib
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/png
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libogg/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/lib/libvorbis/include
 )
 
 # 5. Android Sistem Kütüphanelerini Bağla
