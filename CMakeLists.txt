@@ -22,8 +22,15 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/amiga.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/mac.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/win32.*")
 
+# ÖNEMLİ: ftmac.c dosyasını özellikle de hariç tut (macOS-only, CoreServices gerektirir)
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX ".*/ftmac\\.c$")
+
 # FreeType ana kaynak dosyasını ekle
 file(GLOB FREETYPE_BASE_SOURCES "engine/lib/freetype/android/freetype-2.4.12/src/base/*.c")
+
+# YENİ: base dosyaları eklemeden önce ftmac.c'yi bu listeden de çıkar
+list(FILTER FREETYPE_BASE_SOURCES EXCLUDE REGEX ".*/ftmac\\.c$")
+
 list(APPEND ENGINE_SOURCES ${FREETYPE_BASE_SOURCES})
 
 # 3. Android İçin Paylaşımlı Kütüphane Oluştur
