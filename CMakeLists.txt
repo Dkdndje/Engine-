@@ -43,7 +43,7 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/inftrees\\
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/infutil\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/freetype/.*/gzip/zutil\\.c$")
 
-# ljpeg (JPEG) kütüphanesinin ek/araç programlarını süz
+# ljpeg (JPEG) kütüphanesinin ek/araç programlarını ve çakışan bellek yöneticilerini süz
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/extras/.*")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/ansi2knr\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/cjpeg\\.c$")
@@ -52,6 +52,12 @@ list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/jpegtran\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/rdjpgcom\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/wrjpgcom\\.c$")
 list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/example\\.c$")
+
+# ljpeg çakışan bellek yöneticileri (Android için sadece jmemnobs.c kalmalı)
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/jmemdos\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/jmemmac\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/jmemname\\.c$")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "engine/lib/ljpeg/jmemansi\\.c$")
 
 # FreeType ana kaynak dosyasını ekle
 file(GLOB FREETYPE_BASE_SOURCES "engine/lib/freetype/android/freetype-2.4.12/src/base/*.c")
